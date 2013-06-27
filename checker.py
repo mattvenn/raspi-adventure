@@ -1,37 +1,97 @@
 #!/usr/bin/python
 """
 checks that the stages have been completed, and creates the new clues
+
+bugs:
+if more than 1 person is playing, there is a problem with level3 and sockets being closed.
 """
 
 import pickle
+import thread
 import socket
 import time
 from PIL import Image, ImageDraw
 import BaseHTTPServer
 import urlparse
+from subprocess import check_output
 
-state_file = '/tmp/.adventure_state'
 
 root_dir = '/tmp/adventure/'
+our_dir = '/home/matthew/work/raspi/raspi-adventure/'
+num_stages = 5
+
+def send_message(tty,mesg):
+    #TODO change to pi for user
+    username = 'matthew' #pi
+    output=check_output("echo " + mesg + "| write " + username + " " + tty, shell=True)
+
+def init_next_stage(reg_data):
+    
+    #increment stage
+    reg_data["stage"] += 1
+
+    #create paths and copy files
+    path = root_dir + reg_data["name"]
+    stage_path = "/part" + str(reg_data["stage"])
+    reg_data["cwd"] = path + stage_path
+
+    if reg_data["stage"] < num_stages:
+        print "creating new dir", reg_data["cwd"]
+        output=check_output(["mkdir","-p",path + stage_path])
+        output=check_output(["cp",our_dir+stage_path+"/README.md",reg_data["cwd"]])
+
+    #send a message
+    if reg_data["stage"] == 1:
+        message = "Welcome, " + reg_data["name"] + ". Change to " + reg_data["cwd"] + " and read the README.md to get started"
+    elif reg_data["stage"] == 6:
+        message = "Well done! You finished the game!"
+    else:
+        message = "Well done! Now change to %s for the next stage!" % reg_data["cwd"]
+
+    send_message(reg_data["tty"],message)
+    
+
+#a new thread for each adventurer
+def start_adventure(reg_data):
+    init_next_stage(reg_data)
+    while True:
+        print "checking ", reg_data
+        if reg_data["stage"] == 1:
+            if check_stage_1(reg_data):
+                init_next_stage(reg_data)
+        elif reg_data["stage"] == 2:
+            if check_stage_2(reg_data):
+                init_next_stage(reg_data)
+        elif reg_data["stage"] == 3:
+            if check_stage_3(reg_data):
+                init_next_stage(reg_data)
+        elif reg_data["stage"] == 4:
+            if check_stage_4(reg_data):
+                init_next_stage(reg_data)
+        elif reg_data["stage"] == 5:
+            if check_stage_5(reg_data):
+                init_next_stage(reg_data)
+                break
+        time.sleep(5)
 
 #stage 1 - check for 100 files
-def check_stage_1():
+def check_stage_1(reg_data):
     try:
         for file_num in range(1,100):
-            file_name = root_dir + 'stage1/' + str(file_num)
+            file_name = reg_data["cwd"] + '/' + str(file_num)
             file_handle = open(file_name)
             lines = len(file_handle.readlines())
             if lines != file_num:
-                raise Exception("wrong number of lines")
+                raise Exception("wrong number of lines on file", file_num)
         print "passed"
         return True
     except Exception, e:
         print "failed", e 
     return False
 
-def check_stage_2():
+def check_stage_2(reg_data):
     try:
-        file_name = root_dir + 'stage2/image.png'
+        file_name = reg_data["cwd"] + '/image.png'
         img = Image.open(file_name)
         colors = img.getcolors(10)
         count = 0
@@ -49,7 +109,7 @@ def check_stage_2():
         print "failed", e
     return False
 
-def check_stage_3():
+def check_stage_3(reg_data):
     try:
         s = socket.socket()         # Create a socket object
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -77,9 +137,9 @@ def check_stage_3():
         c.close()
     return False
 
-def check_stage_4():
+def check_stage_4(reg_data):
     try:
-        file_name = root_dir + 'stage4/file.txt'
+        file_name = reg_data["cwd"] + '/file.txt'
         fd = open(file_name)
         lines = fd.readlines()
         if len(lines) != 100:
@@ -151,7 +211,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         MyHTTPServer.server_bind(self)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) 
 
-def check_stage_5():
+def check_stage_5(reg_data):
     host = socket.gethostname()
     port = 8080
     httpd = MyHTTPServer((host,port),MyHandler,1010011)
@@ -163,29 +223,22 @@ def check_stage_5():
         return True
 
 ##################
-try:
-    stage = pickle.load(open(state_file))
-except IOError:
-    stage = 1
 
 
-print "stage:", stage
-if stage == 1:
-    if check_stage_1():
-        stage +=1
-elif stage == 2:
-    if check_stage_2():
-        stage +=1
-elif stage == 3:
-    if check_stage_3():
-        stage +=1
-elif stage == 4:
-    if check_stage_4():
-        stage +=1
-elif stage == 5:
-    if check_stage_5():
-        stage +=1
+s = socket.socket()         # Create a socket object
+s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+host = socket.gethostname() # Get local machine name
+port = 10000                # Reserve a port for your service.
+s.bind((host, port))        # Bind to the port
 
+s.listen(5)                 # Now wait for client connection.
+while True:
+    c, addr = s.accept()     # Establish connection with client.
+    print 'Got connection from', addr
+    data = c.recv(1024)
+    if data:
+        reg_data = pickle.loads(data)
+        reg_data["stage"] = 0
+        print reg_data
+        thread.start_new_thread(start_adventure,(reg_data,))
 
-state_file = open(state_file,'w')
-pickle.dump(stage,state_file)
