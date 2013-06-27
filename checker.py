@@ -7,6 +7,8 @@ import pickle
 import socket
 import time
 from PIL import Image, ImageDraw
+import BaseHTTPServer
+import urlparse
 
 state_file = '/tmp/.adventure_state'
 
@@ -100,12 +102,73 @@ def check_stage_4():
         print "no file"
         return False
     return False
+
+
+
+
+class MyHTTPServer(BaseHTTPServer.HTTPServer):
+    def __init__(self,server_address, RequestHandlerClass,code):
+        BaseHTTPServer.HTTPServer.__init__(self, server_address, RequestHandlerClass)
+        self.code = code
+        print "code:", code
+
+class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+    def do_GET(s):
+        """Respond to a GET request."""
+        s.send_response(200)
+        s.send_header("Content-type", "text/html")
+        s.end_headers()
+        s.wfile.write("<html><head><title>Password Page</title></head>")
+        s.wfile.write("<body><p>challenge=" + str(s.server.code) + "</p>")
+        s.wfile.write("</body></html>")
+
+    def do_POST(s):
+        length = int(s.headers['Content-Length'])
+        post_data = urlparse.parse_qs(s.rfile.read(length).decode('utf-8'))
+        if post_data.has_key('response'):
+            try:
+                response = int(post_data['response'][0])
+                if response == s.server.code * 2:
+                    print "pass"
+                    s.send_response(200)
+                    s.send_header("Content-type", "text/html")
+                    s.end_headers()
+                    #kill the server
+                    s.server.socket.close()
+                else:
+                    print "wrong code:", response
+                    s.send_response(500)
+            except ValueError:
+                print "couldn't parse response"
+                s.send_response(500)
+        else:
+            print "no response arg"
+            s.send_response(500)
+        s.send_header("Content-type", "text/html")
+        s.end_headers()
+
+    def server_bind(self):
+        MyHTTPServer.server_bind(self)
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) 
+
+def check_stage_5():
+    host = socket.gethostname()
+    port = 8080
+    httpd = MyHTTPServer((host,port),MyHandler,1010011)
+    try:
+        httpd.serve_forever()
+    except socket.error:
+        httpd.server_close()
+        print "passed"
+        return True
+
 ##################
 try:
     stage = pickle.load(open(state_file))
 except IOError:
     stage = 1
-stage = 4
+
+
 print "stage:", stage
 if stage == 1:
     if check_stage_1():
@@ -119,6 +182,10 @@ elif stage == 3:
 elif stage == 4:
     if check_stage_4():
         stage +=1
+elif stage == 5:
+    if check_stage_5():
+        stage +=1
+
 
 state_file = open(state_file,'w')
 pickle.dump(stage,state_file)
