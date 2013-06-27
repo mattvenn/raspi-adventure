@@ -4,6 +4,8 @@ checks that the stages have been completed, and creates the new clues
 """
 
 import pickle
+import socket
+import time
 from PIL import Image, ImageDraw
 
 state_file = '/tmp/.adventure_state'
@@ -13,7 +15,7 @@ root_dir = '/tmp/adventure/'
 #stage 1 - check for 100 files
 def check_stage_1():
     try:
-        for file_num in range(1,2):
+        for file_num in range(1,100):
             file_name = root_dir + 'stage1/' + str(file_num)
             file_handle = open(file_name)
             lines = len(file_handle.readlines())
@@ -23,7 +25,7 @@ def check_stage_1():
         return True
     except Exception, e:
         print "failed", e 
-        return False
+    return False
 
 def check_stage_2():
     try:
@@ -41,11 +43,37 @@ def check_stage_2():
         if count == 3:
             print "passed"
             return True
-        else:
-            print "failed"
-            return False
     except Exception, e:
         print "failed", e
+    return False
+
+def check_stage_3():
+    try:
+        s = socket.socket()         # Create a socket object
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        host = socket.gethostname() # Get local machine name
+        port = 12345                # Reserve a port for your service.
+        s.bind((host, port))        # Bind to the port
+
+        s.listen(5)                 # Now wait for client connection.
+        while True:
+            c, addr = s.accept()     # Establish connection with client.
+            print 'Got connection from', addr
+            data = c.recv(1024)
+            if data:
+                print "got", data
+                try:
+                    sent_time = float(data)
+                    if int(sent_time) == int(time.time()):
+                        print "passed"
+                        c.close()
+                        return True
+                except ValueError:
+                    pass
+    except Exception, e:
+        print "failed", e
+        c.close()
+    return False
 
 ##################
 try:
@@ -53,12 +81,16 @@ try:
 except IOError:
     stage = 1
 
+stage = 3
 print "stage:", stage
 if stage == 1:
     if check_stage_1():
         stage +=1
 elif stage == 2:
     if check_stage_2():
+        stage +=1
+elif stage == 3:
+    if check_stage_3():
         stage +=1
 
 state_file = open(state_file,'w')
