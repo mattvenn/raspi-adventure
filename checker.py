@@ -75,13 +75,37 @@ def check_stage_3():
         c.close()
     return False
 
+def check_stage_4():
+    try:
+        file_name = root_dir + 'stage4/file.txt'
+        fd = open(file_name)
+        lines = fd.readlines()
+        if len(lines) != 100:
+            print "wrong number of lines"
+            return False
+        expecting = 'raspberry'
+        for line in lines:
+            line = line.strip()
+            if line != expecting:
+                print "line wasn't correct"
+                print line
+                return False
+            if expecting == 'raspberry':
+                expecting = 'pi'
+            else:
+                expecting = 'raspberry'
+        print "passed"
+        return True
+    except IOError:
+        print "no file"
+        return False
+    return False
 ##################
 try:
     stage = pickle.load(open(state_file))
 except IOError:
     stage = 1
-
-stage = 3
+stage = 4
 print "stage:", stage
 if stage == 1:
     if check_stage_1():
@@ -91,6 +115,9 @@ elif stage == 2:
         stage +=1
 elif stage == 3:
     if check_stage_3():
+        stage +=1
+elif stage == 4:
+    if check_stage_4():
         stage +=1
 
 state_file = open(state_file,'w')
