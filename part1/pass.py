@@ -1,6 +1,5 @@
-for file_num in range(1,101):
-    file_name = str(file_num)
-    fd = open(file_name,'w')
-    for line in range(file_num):
-        fd.write("hello\n")
-    fd.close()
+fd = open('file.txt', 'w')
+for i in range(50):
+    fd.write("raspberry\n")
+    fd.write("pi\n")
+fd.close()

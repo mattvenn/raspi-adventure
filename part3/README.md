@@ -1,30 +1,47 @@
 # The Aim
 
-This one is a bit harder - the challenge is to connect to a server running on the pi at port 12345. We have to send the server the right password to unlock the next step.
+Now we're moving onto images. You now need to create a PNG image, with 3 circles in it. The 3 circles must be red, green and blue.
 
-The password is the integer number of seconds since midnight, 1st January, 1970. In Linux, this is known as the 'number of seconds since the epoch'
+The image file must be in this directory, and must be called image.png
 
 # What you'll need to know...
 
-## How to get the number of seconds since the epoch
+## The python image library
 
-the python document on time is here http://docs.python.org/2/library/time.html
+    import Image, ImageDraw
 
-## Converting to and from strings, ints and floats
+## Creating a new image
 
-read the entries for float(), int() and str() on the built-in functions page: http://docs.python.org/2/library/functions.html
+    image = Image.new('RGB', size)
 
-## Connecting to a TCP server
+where size is a tuple that specifies the width and height of the image:
 
-The more complicated part is connecting to the server. The further reading section below has all the details, but the bare minimum is:
+    (width,heigth)
 
-    s = socket.socket()         # Create a socket object
-    host = socket.gethostname() # Get local machine name
-    port = 12345                # The port
-    s.connect((host, port))     # Connect
-    s.send(some_thing)          # Send something
-    s.close                     # Close the socket
+## The draw object
+
+    draw = ImageDraw.Draw(image)
+
+We can then use this to draw shapes on our image
+
+## Drawing a circle
+
+    draw.ellipse(co-ords, fill=colour)
+
+Where co-ords is a 4 part array that defines the top left of the ellipse and the bottom right of the ellipse.
+
+And color is a 3 part array that specifies the red, green and blue component of the colour we want the ellipse to be.
+
+## Saving the image
+
+    image.save('image.png','PNG')
+
+## Looking at your image
+
+To check your image, you can use winscp (on the usb stick provided at the start of the workshop, or download from here: http://winscp.net/eng/index.php)
+
+You can copy the image from the pi to your laptop and look at it there.
 
 # Further reading
 
-http://docs.python.org/2/howto/sockets.html
+http://www.pythonware.com/library/pil/handbook/image.htm

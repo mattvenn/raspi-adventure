@@ -1,47 +1,33 @@
 # The Aim
 
-Now we're moving onto images. You now need to create a PNG image, with 3 circles in it. The 3 circles must be red, green and blue.
+To pass this, the first stage of the adventure, you must write a python program that creates 100 files. The files must be called 1, 2, 3, 4 ... all the way to 100.
 
-The image file must be in this directory, and must be called image.png
+The files must be in this directory.
+
+The first file must have 1 line in it, the 2nd file 2 lines, all the way up until the 100th file has 100 lines in it.
+
+Once the files have been created you will receive your clue to begin the 2nd part of the adventure...
 
 # What you'll need to know...
 
-## The python image library
+## Opening a file to write
 
-    import Image, ImageDraw
+    file_handle = open('filename','w')
 
-## Creating a new image
+The 'w' is to tell python that we want to write to the file.
 
-    image = Image.new('RGB', size)
+## Writing lines to a file
 
-where size is a tuple that specifies the width and height of the image:
+    file_handle.write('a line\n')
 
-    (width,heigth)
+We need a \n at the end of the line so that it becomes a new line. The \n character is how Linux makes new lines.
 
-## The draw object
+## Closing files
 
-    draw = ImageDraw.Draw(image)
+    file_handle.close()
 
-We can then use this to draw shapes on our image
-
-## Drawing a circle
-
-    draw.ellipse(co-ords, fill=colour)
-
-Where co-ords is a 4 part array that defines the top left of the ellipse and the bottom right of the ellipse.
-
-And color is a 3 part array that specifies the red, green and blue component of the colour we want the ellipse to be.
-
-## Saving the image
-
-    image.save('image.png','PNG')
-
-## Looking at your image
-
-To check your image, you can use winscp (on the usb stick provided at the start of the workshop, or download from here: http://winscp.net/eng/index.php)
-
-You can copy the image from the pi to your laptop and look at it there.
+It's always good practice to close a file once it's been written to.
 
 # Further reading
 
-http://www.pythonware.com/library/pil/handbook/image.htm
+http://docs.python.org/2/tutorial/inputoutput.html

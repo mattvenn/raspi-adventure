@@ -1,12 +1,17 @@
 # The Aim
 
-To pass this, the first stage of the adventure, you must write a python program that creates 100 files. The files must be called 1, 2, 3, 4 ... all the way to 100.
+To pass this, the first stage of the adventure, you must write a python program that creates a file. The file must be 100 lines long.
 
-The files must be in this directory.
+The odd lines of the file must be 'raspberry', and the even lines 'pi'. So the first 4 lines of the file would look like this:
 
-The first file must have 1 line in it, the 2nd file 2 lines, all the way up until the 100th file has 100 lines in it.
+    raspberry
+    pi
+    raspberry
+    pi
 
-Once the files have been created you will receive your clue to begin the 2nd part of the adventure...
+The file must be in this directory.
+
+Once the file have been created correctly you will receive your clue to begin the 2nd part of the adventure...
 
 # What you'll need to know...
 
