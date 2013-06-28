@@ -10,6 +10,8 @@ Commandline based, you have to fulfil a number of programming tasks including:
 * creating images with PIL
 * regular expressions
 
+This has been designed for already fairly advanced programmers (though not necessarily in python). More levels could be added to cater for beginners.
+
 # Installation
 
 This has been designed for the raspberry pi, so you'd need to change a few paths (hard coded) in the source. 
