@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/bin/bash
 """ 
 sets up the adventure 
 assumes the git repo has been checked out at /home/pi/raspi-adventure
