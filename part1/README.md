@@ -46,4 +46,4 @@ It's always good practice to close a file once it's been written to.
 
 # Further reading
 
-http://docs.python.org/2/tutorial/inputoutput.html
+* http://docs.python.org/2/tutorial/inputoutput.html

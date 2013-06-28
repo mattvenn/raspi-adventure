@@ -57,5 +57,5 @@ Once you have your challenge code, you can post it back to the server using the 
 
 # Further reading
 
-More on regular expressions: http://docs.python.org/2/howto/regex.html#regex-howto
-Python's HTMLParser: http://docs.python.org/2/library/htmlparser.html
+* More on regular expressions: http://docs.python.org/2/howto/regex.html#regex-howto
+* Python's HTMLParser: http://docs.python.org/2/library/htmlparser.html

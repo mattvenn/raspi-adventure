@@ -27,4 +27,4 @@ The more complicated part is connecting to the server. The further reading secti
 
 # Further reading
 
-http://docs.python.org/2/howto/sockets.html
+* http://docs.python.org/2/howto/sockets.html

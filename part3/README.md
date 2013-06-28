@@ -44,5 +44,5 @@ You can copy the image from the pi to your laptop and look at it there.
 
 # Further reading
 
-Images: http://effbot.org/imagingbook/image.htm
-Drawing: http://effbot.org/imagingbook/imagedraw.htm
+* Images: http://effbot.org/imagingbook/image.htm
+* Drawing: http://effbot.org/imagingbook/imagedraw.htm

@@ -21,4 +21,4 @@ This avoids having to initialise a variable and incrementing it manually. Try it
 
 # Further reading
 
-http://docs.python.org/2/tutorial/inputoutput.html
+* http://docs.python.org/2/tutorial/inputoutput.html
