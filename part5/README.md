@@ -28,19 +28,22 @@ There are lots of ways to do this, after fetching the file we could
 
 Because we're advanced programmers, we'll focus on the second 2 options. If you want to learn about HTML parsing, then have a look at this answer on stack overflow: http://stackoverflow.com/questions/3276040/how-can-i-use-the-python-htmlparser-library-to-extract-data-from-a-specific-div
 
-It's actually quite a complicated way to complete this task because we only need to match one thing and we know the exact format of it. Regular expressions would solve the problem quicker.
+It's actually quite a complicated way to complete this task because we only need to match one thing and we know the exact format of it. Regular expressions would be simpler in this case.
 
 ## Regular expressions
 
-Regular expressions are an incredibly powerful tool for matching patterns and extracting data from text. The topic is huge, so we can only just touch on it here, but if you aspire to be a powerful programmer then you should learn. 
+Regular expressions are an incredibly powerful tool for matching patterns and extracting data from text. The topic is huge, so we can only just touch on it here, but if you aspire to be a powerful programmer then you should think about learning! 
 
 You can read more about how to match patterns on this page: http://docs.python.org/2/howto/regex.html#regex-howto
 
-Try this in ipython, and play around with it. The () brackets 'capture' data for us to read later. \w+ is the way we specify a regular expression to match some number of word characters (includes all of A-Z, a-z).
+Try this in ipython, and play around with it. The () brackets 'capture' data for us to read later. 
+
+ * `\w+` is the way we specify a regular expression to match some number of word characters (includes all of A-Z, a-z). 
+ * `.*` matchs any number of any characters.
 
     import re
     text = "raspberry pi is cool"
-    match = re.search('raspberry is (\w+)',text)
+    match = re.search('rasp.*is (\w+)',text)
     if match:
         print match.group(1)
 
