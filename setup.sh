@@ -11,9 +11,9 @@ mv raspi-adventure .raspi-adventure
 
 #requirements
 sudo apt-get -y install python-dev  #need this for PIL
-sudo easy_install PIL
-sudo easy_install python-daemon
-sudo easy_install requests
+sudo pip install pillow #better supported PIL
+sudo pip install python-daemon
+sudo pip install requests
 
 #start server
 .raspi-adventure/checker.py
