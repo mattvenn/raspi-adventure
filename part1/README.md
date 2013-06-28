@@ -27,6 +27,17 @@ The 'w' is to tell python that we want to write to the file.
 
 We need a \n at the end of the line so that it becomes a new line. The \n character is how Linux makes new lines.
 
+## While loops in python
+
+You can repeat a loop using syntax like this:
+
+    var = 0
+    while var < 10:
+        var += 1
+        print var
+
+Try it in ipython.
+
 ## Closing files
 
     file_handle.close()
