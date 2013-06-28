@@ -14,7 +14,7 @@ This has been designed for already fairly advanced programmers (though not neces
 
 # Installation
 
-This has been designed for the raspberry pi, so you'd need to change a few paths (hard coded) in the source. 
+This has been designed for the raspberry pi, so you'd need to change a few paths (hard coded) in the source. Also, it expects you to be logged in as pi, so that would need to be changed too.
 
 If you're on a pi, then fetch this repo with
 
@@ -49,6 +49,7 @@ If you get an error, then try and fix it (first thing to do is remove the daemon
 
 * the game will fail if 2 people are running and both get onto the sockets level at once
 * don't hard code paths
+* don't expect user to be logged in as pi
 * make it easier to add levels (better framework)
 * logging from the checker.py daemon
 * install an init script to start the daemon at boot
