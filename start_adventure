@@ -1,16 +1,20 @@
+#!/usr/bin/python
+
 from subprocess import check_output
 import pickle
 import socket
 
 reg_data = {}
 reg_data["tty"] = check_output(["tty"]).strip()
-reg_data["name"] = "matt"
-
+reg_data["name"] = raw_input('what is your name?\n')
 
 s = socket.socket()
 host = socket.gethostname()
 port = 10000
 
-s.connect((host, port))
-s.send(pickle.dumps(reg_data))
-s.close
+try:
+    s.connect((host, port))
+    s.send(pickle.dumps(reg_data))
+    s.close
+except socket.error:
+    print "oops, this is embarassing! Tell the workshop leader..."

@@ -14,10 +14,11 @@ from PIL import Image, ImageDraw
 import BaseHTTPServer
 import urlparse
 from subprocess import check_output
+import daemon
 
 
 root_dir = '/tmp/adventure/'
-our_dir = '/home/matthew/work/raspi/raspi-adventure/'
+our_dir = '/home/pi/.raspi-adventure/'
 num_stages = 5
 
 def send_message(tty,mesg):
@@ -224,21 +225,24 @@ def check_stage_5(reg_data):
 
 ##################
 
+def main():
+    s = socket.socket()         # Create a socket object
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    host = socket.gethostname() # Get local machine name
+    port = 10000                # Reserve a port for your service.
+    s.bind((host, port))        # Bind to the port
 
-s = socket.socket()         # Create a socket object
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-host = socket.gethostname() # Get local machine name
-port = 10000                # Reserve a port for your service.
-s.bind((host, port))        # Bind to the port
+    s.listen(5)                 # Now wait for client connection.
+    while True:
+        c, addr = s.accept()     # Establish connection with client.
+        print 'Got connection from', addr
+        data = c.recv(1024)
+        if data:
+            reg_data = pickle.loads(data)
+            reg_data["stage"] = 0
+            print reg_data
+            thread.start_new_thread(start_adventure,(reg_data,))
 
-s.listen(5)                 # Now wait for client connection.
-while True:
-    c, addr = s.accept()     # Establish connection with client.
-    print 'Got connection from', addr
-    data = c.recv(1024)
-    if data:
-        reg_data = pickle.loads(data)
-        reg_data["stage"] = 0
-        print reg_data
-        thread.start_new_thread(start_adventure,(reg_data,))
-
+#need to sort this out, at least add some logging!
+with daemon.DaemonContext():
+    main()
