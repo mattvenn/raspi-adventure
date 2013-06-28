@@ -36,15 +36,17 @@ Regular expressions are an incredibly powerful tool for matching patterns and ex
 
 You can read more about how to match patterns on this page: http://docs.python.org/2/howto/regex.html#regex-howto
 
-Try this in ipython, and play around with it. The () brackets 'capture' data for us to read later. 
+Try this in ipython, and play around with it.
 
- * `\w+` is the way we specify a regular expression to match some number of word characters (includes all of A-Z, a-z). 
- * `.*` matchs any number of any characters.
+* `.*` matchs any number of any characters.
+* `\w+` is the way we specify a regular expression to match some number of word characters (includes all of A-Z, a-z). 
+* The () brackets 'capture' data for us to read later. 
 
     import re
     text = "raspberry pi is cool"
     match = re.search('rasp.*is (\w+)',text)
     if match:
+        print match.group()
         print match.group(1)
 
 Clue: to match digits, you'd need \d+ intead of \w+
