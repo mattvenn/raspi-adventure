@@ -10,7 +10,8 @@ import pickle
 import thread
 import socket
 import time
-from PIL import Image, ImageDraw
+import Image
+import ImageDraw
 import BaseHTTPServer
 import urlparse
 from subprocess import check_output
