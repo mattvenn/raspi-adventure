@@ -244,5 +244,5 @@ def main():
             thread.start_new_thread(start_adventure,(reg_data,))
 
 #need to sort this out, at least add some logging!
-#with daemon.DaemonContext():
-main()
+with daemon.DaemonContext():
+    main()
