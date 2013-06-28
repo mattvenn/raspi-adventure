@@ -10,8 +10,7 @@ import pickle
 import thread
 import socket
 import time
-import Image
-import ImageDraw
+from PIL import Image, ImageDraw
 import BaseHTTPServer
 import urlparse
 from subprocess import check_output
@@ -24,7 +23,7 @@ num_stages = 5
 
 def send_message(tty,mesg):
     #TODO change to pi for user
-    username = 'matthew' #pi
+    username = 'pi'
     output=check_output("echo " + mesg + "| write " + username + " " + tty, shell=True)
 
 def init_next_stage(reg_data):
@@ -37,7 +36,7 @@ def init_next_stage(reg_data):
     stage_path = "/part" + str(reg_data["stage"])
     reg_data["cwd"] = path + stage_path
 
-    if reg_data["stage"] < num_stages:
+    if reg_data["stage"] <= num_stages:
         print "creating new dir", reg_data["cwd"]
         output=check_output(["mkdir","-p",path + stage_path])
         output=check_output(["cp",our_dir+stage_path+"/README.md",reg_data["cwd"]])
@@ -76,8 +75,34 @@ def start_adventure(reg_data):
                 break
         time.sleep(5)
 
-#stage 1 - check for 100 files
 def check_stage_1(reg_data):
+    try:
+        file_name = reg_data["cwd"] + '/file.txt'
+        fd = open(file_name)
+        lines = fd.readlines()
+        if len(lines) != 100:
+            print "wrong number of lines"
+            return False
+        expecting = 'raspberry'
+        for line in lines:
+            line = line.strip()
+            if line != expecting:
+                print "line wasn't correct"
+                print line
+                return False
+            if expecting == 'raspberry':
+                expecting = 'pi'
+            else:
+                expecting = 'raspberry'
+        print "passed"
+        return True
+    except IOError:
+        print "no file"
+        return False
+    return False
+
+#stage 2 - check for 100 files
+def check_stage_2(reg_data):
     try:
         for file_num in range(1,100):
             file_name = reg_data["cwd"] + '/' + str(file_num)
@@ -91,7 +116,7 @@ def check_stage_1(reg_data):
         print "failed", e 
     return False
 
-def check_stage_2(reg_data):
+def check_stage_3(reg_data):
     try:
         file_name = reg_data["cwd"] + '/image.png'
         img = Image.open(file_name)
@@ -111,7 +136,7 @@ def check_stage_2(reg_data):
         print "failed", e
     return False
 
-def check_stage_3(reg_data):
+def check_stage_4(reg_data):
     try:
         s = socket.socket()         # Create a socket object
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -137,32 +162,6 @@ def check_stage_3(reg_data):
     except Exception, e:
         print "failed", e
         c.close()
-    return False
-
-def check_stage_4(reg_data):
-    try:
-        file_name = reg_data["cwd"] + '/file.txt'
-        fd = open(file_name)
-        lines = fd.readlines()
-        if len(lines) != 100:
-            print "wrong number of lines"
-            return False
-        expecting = 'raspberry'
-        for line in lines:
-            line = line.strip()
-            if line != expecting:
-                print "line wasn't correct"
-                print line
-                return False
-            if expecting == 'raspberry':
-                expecting = 'pi'
-            else:
-                expecting = 'raspberry'
-        print "passed"
-        return True
-    except IOError:
-        print "no file"
-        return False
     return False
 
 
@@ -245,5 +244,5 @@ def main():
             thread.start_new_thread(start_adventure,(reg_data,))
 
 #need to sort this out, at least add some logging!
-with daemon.DaemonContext():
-    main()
+#with daemon.DaemonContext():
+main()
