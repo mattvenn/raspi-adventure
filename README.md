@@ -14,9 +14,7 @@ This has been designed for already fairly advanced programmers (though not neces
 
 # Installation
 
-This has been designed for the raspberry pi, so you'd need to change a few paths (hard coded) in the source. Also, it expects you to be logged in as pi, so that would need to be changed too.
-
-If you're on a pi, then fetch this repo with
+Fetch this repo with
 
     cd ~/
     git clone git@github.com:mattvenn/raspi-adventure.git
@@ -25,15 +23,15 @@ And set it up like this (have a read of the script first):
 
     ./raspi-adventure/setup.sh
 
-Which should install the list of requirements, install the start script, move the install directory, then start the game server.
+Which should install the list of requirements, install the start script, move the install directory to .raspi-adventure (for obfuscation).
 
-## Restarting the game server after a reboot
+## Starting the game server
 
-The game server will need restarting on reboot like this:
+This has been designed for the pi, with the default install directory as /home/pi/.raspi-adventure. You can override with the option --root-dir
 
     python ~/.raspi-adventure/checker.py
 
-Note the . in front of the path, which is used to obfuscate the files that could be used for cheating!
+Log is written to /tmp/log.file. You can also use the --no-detach argument to stop the checker from daemonising and to see output on stdout.
 
 # To start!
 
@@ -43,7 +41,7 @@ type
 
 on the commandline, it will ask your name, and if all is well you'll be directed to the first clue.
 
-If you get an error, then try and fix it (first thing to do is remove the daemonising at the end of checker.py to start seeing the logging). And please let me know!
+If you get an error, then try and fix it (first thing to do is try running with --no-detach or check the logs at /tmp/log.file). And please let me know!
 
 # Todo
 

@@ -16,5 +16,3 @@ sudo pip install pillow #better supported PIL
 sudo pip install python-daemon
 sudo pip install requests
 
-#start server
-.raspi-adventure/checker.py

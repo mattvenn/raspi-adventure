@@ -244,21 +244,30 @@ def main():
             logger.info(reg_data)
             thread.start_new_thread(start_adventure,(reg_data,))
 
-#need to sort this out, at least add some logging!
-logger = logging.getLogger("log")
-logger.setLevel(logging.INFO)
-formatter = logging.Formatter(
-    "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-handler = logging.FileHandler("/tmp/log.file")
-logger.addHandler(handler)
-handler.setFormatter(formatter)
-daemon_context = daemon.DaemonContext(files_preserve=[handler.stream])
 
 #command line args
 parser = argparse.ArgumentParser(description='adventure checker')
-parser.add_argument('--root-dir', help='where the directory is', default="/home/pi/.raspi-adventure/")
+parser.add_argument('--root-dir', help='where the home directory is', default="/home/pi/.raspi-adventure/")
 parser.add_argument('--target-dir', help='where the game is played', default="/tmp/adventure/")
+parser.add_argument('--no-detach', help='don\' detach from the console - for debugging', action='store_const', dest='nodetach', default=False, const=True)
+
+#logging setup
+logger = logging.getLogger("log")
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter(
+    "%(asctime)s - %(levelname)s - %(message)s")
 
 args = parser.parse_args()
-#with daemon_context:
-main()
+
+if args.nodetach:
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    main()
+else:
+    handler = logging.FileHandler("/tmp/log.file")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    daemon_context = daemon.DaemonContext(files_preserve=[handler.stream])
+    with daemon_context:
+        main()
