@@ -10,6 +10,7 @@ sudo cp raspi-adventure/start_adventure /usr/local/bin/
 mv raspi-adventure .raspi-adventure
 
 #requirements
+sudo apt-get update
 sudo apt-get -y install python-dev  #need this for PIL
 sudo pip install pillow #better supported PIL
 sudo pip install python-daemon
