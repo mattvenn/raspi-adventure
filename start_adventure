@@ -6,6 +6,7 @@ import socket
 
 reg_data = {}
 reg_data["tty"] = check_output(["tty"]).strip()
+reg_data["username"] = check_output(["id","-un"]).strip()
 reg_data["name"] = raw_input('what is your name?\n')
 
 s = socket.socket()
