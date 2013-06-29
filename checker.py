@@ -10,6 +10,8 @@ import pickle
 import thread
 import socket
 import time
+import logging
+import argparse
 from PIL import Image, ImageDraw
 import BaseHTTPServer
 import urlparse
@@ -17,29 +19,27 @@ from subprocess import check_output
 import daemon
 
 
-root_dir = '/tmp/adventure/'
-our_dir = '/home/pi/.raspi-adventure/'
 num_stages = 5
 
-def send_message(tty,mesg):
+def send_message(reg_data,mesg):
     #TODO change to pi for user
-    username = 'pi'
-    output=check_output("echo " + mesg + "| write " + username + " " + tty, shell=True)
+    output=check_output("echo " + mesg + "| write " + reg_data["username"] + " " + reg_data["tty"], shell=True)
 
 def init_next_stage(reg_data):
     
     #increment stage
     reg_data["stage"] += 1
+    logger.info("stage now %d for %s" % (reg_data["stage"], reg_data["name"]))
 
     #create paths and copy files
-    path = root_dir + reg_data["name"]
+    path = args.target_dir + reg_data["name"]
     stage_path = "/part" + str(reg_data["stage"])
     reg_data["cwd"] = path + stage_path
 
     if reg_data["stage"] <= num_stages:
-        print "creating new dir", reg_data["cwd"]
+        logger.info( "creating new dir:" + reg_data["cwd"])
         output=check_output(["mkdir","-p",path + stage_path])
-        output=check_output(["cp",our_dir+stage_path+"/README.md",reg_data["cwd"]])
+        output=check_output(["cp",args.root_dir+stage_path+"/README.md",reg_data["cwd"]])
 
     #send a message
     if reg_data["stage"] == 1:
@@ -49,31 +49,38 @@ def init_next_stage(reg_data):
     else:
         message = "Well done! Now change to %s for the next stage!" % reg_data["cwd"]
 
-    send_message(reg_data["tty"],message)
+    send_message(reg_data,message)
+    logger.info("sent message")
+
     
 
 #a new thread for each adventurer
 def start_adventure(reg_data):
-    init_next_stage(reg_data)
-    while True:
-        print "checking ", reg_data
-        if reg_data["stage"] == 1:
-            if check_stage_1(reg_data):
-                init_next_stage(reg_data)
-        elif reg_data["stage"] == 2:
-            if check_stage_2(reg_data):
-                init_next_stage(reg_data)
-        elif reg_data["stage"] == 3:
-            if check_stage_3(reg_data):
-                init_next_stage(reg_data)
-        elif reg_data["stage"] == 4:
-            if check_stage_4(reg_data):
-                init_next_stage(reg_data)
-        elif reg_data["stage"] == 5:
-            if check_stage_5(reg_data):
-                init_next_stage(reg_data)
-                break
-        time.sleep(5)
+    try:
+        init_next_stage(reg_data)
+        while True:
+            logger.info( "checking :"+ str(reg_data))
+            if reg_data["stage"] == 1:
+                if check_stage_1(reg_data):
+                    init_next_stage(reg_data)
+            elif reg_data["stage"] == 2:
+                if check_stage_2(reg_data):
+                    init_next_stage(reg_data)
+            elif reg_data["stage"] == 3:
+                if check_stage_3(reg_data):
+                    init_next_stage(reg_data)
+            elif reg_data["stage"] == 4:
+                if check_stage_4(reg_data):
+                    init_next_stage(reg_data)
+            elif reg_data["stage"] == 5:
+                if check_stage_5(reg_data):
+                    init_next_stage(reg_data)
+                    break
+            time.sleep(5)
+    except Exception, e:
+        logger.warn("unhandled exception:" + str(e) )
+        exit(1)
+        
 
 def check_stage_1(reg_data):
     try:
@@ -81,23 +88,21 @@ def check_stage_1(reg_data):
         fd = open(file_name)
         lines = fd.readlines()
         if len(lines) != 100:
-            print "wrong number of lines"
+            logger.info("wrong number of lines")
             return False
         expecting = 'raspberry'
         for line in lines:
             line = line.strip()
             if line != expecting:
-                print "line wasn't correct"
-                print line
+                logger.info( "line wasn't correct")
                 return False
             if expecting == 'raspberry':
                 expecting = 'pi'
             else:
                 expecting = 'raspberry'
-        print "passed"
         return True
     except IOError:
-        print "no file"
+        logger.info( "no file")
         return False
     return False
 
@@ -110,10 +115,9 @@ def check_stage_2(reg_data):
             lines = len(file_handle.readlines())
             if lines != file_num:
                 raise Exception("wrong number of lines on file", file_num)
-        print "passed"
         return True
     except Exception, e:
-        print "failed", e 
+        logger.info( "failed:" + str(e) )
     return False
 
 def check_stage_3(reg_data):
@@ -130,10 +134,9 @@ def check_stage_3(reg_data):
             if color[1] == (0,0,255):
                 count +=1
         if count == 3:
-            print "passed"
             return True
     except Exception, e:
-        print "failed", e
+        logger.info( "failed:"+ str(e))
     return False
 
 def check_stage_4(reg_data):
@@ -147,20 +150,19 @@ def check_stage_4(reg_data):
         s.listen(5)                 # Now wait for client connection.
         while True:
             c, addr = s.accept()     # Establish connection with client.
-            print 'Got connection from', addr
+            logger.info( 'got connection from'+ str(addr))
             data = c.recv(1024)
             if data:
-                print "got", data
+                logger.info( "got:"+ str(data))
                 try:
                     sent_time = float(data)
                     if int(sent_time) == int(time.time()):
-                        print "passed"
                         c.close()
                         return True
                 except ValueError:
                     pass
     except Exception, e:
-        print "failed", e
+        logger.info( "failed:"+ str(e))
         c.close()
     return False
 
@@ -171,7 +173,7 @@ class MyHTTPServer(BaseHTTPServer.HTTPServer):
     def __init__(self,server_address, RequestHandlerClass,code):
         BaseHTTPServer.HTTPServer.__init__(self, server_address, RequestHandlerClass)
         self.code = code
-        print "code:", code
+#        logger.info( "code:"+ code)
 
 class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def do_GET(s):
@@ -190,20 +192,19 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             try:
                 response = int(post_data['response'][0])
                 if response == s.server.code * 2:
-                    print "pass"
                     s.send_response(200)
                     s.send_header("Content-type", "text/html")
                     s.end_headers()
                     #kill the server
                     s.server.socket.close()
                 else:
-                    print "wrong code:", response
+                    logger.info( "wrong code:"+ response)
                     s.send_response(500)
             except ValueError:
-                print "couldn't parse response"
+                logger.info( "couldn't parse response")
                 s.send_response(500)
         else:
-            print "no response arg"
+            logger.info( "no response arg")
             s.send_response(500)
         s.send_header("Content-type", "text/html")
         s.end_headers()
@@ -220,12 +221,12 @@ def check_stage_5(reg_data):
         httpd.serve_forever()
     except socket.error:
         httpd.server_close()
-        print "passed"
         return True
 
 ##################
 
 def main():
+    logger.info("started adventure checker")
     s = socket.socket()         # Create a socket object
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     host = socket.gethostname() # Get local machine name
@@ -235,14 +236,29 @@ def main():
     s.listen(5)                 # Now wait for client connection.
     while True:
         c, addr = s.accept()     # Establish connection with client.
-        print 'Got connection from', addr
+        logger.info( 'got connection from ' + str(addr))
         data = c.recv(1024)
         if data:
             reg_data = pickle.loads(data)
             reg_data["stage"] = 0
-            print reg_data
+            logger.info(reg_data)
             thread.start_new_thread(start_adventure,(reg_data,))
 
 #need to sort this out, at least add some logging!
-with daemon.DaemonContext():
-    main()
+logger = logging.getLogger("log")
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter(
+    "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+handler = logging.FileHandler("/tmp/log.file")
+logger.addHandler(handler)
+handler.setFormatter(formatter)
+daemon_context = daemon.DaemonContext(files_preserve=[handler.stream])
+
+#command line args
+parser = argparse.ArgumentParser(description='adventure checker')
+parser.add_argument('--root-dir', help='where the directory is', default="/home/pi/.raspi-adventure/")
+parser.add_argument('--target-dir', help='where the game is played', default="/tmp/adventure/")
+
+args = parser.parse_args()
+#with daemon_context:
+main()
