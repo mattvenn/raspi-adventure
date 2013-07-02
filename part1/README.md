@@ -9,7 +9,7 @@ The odd lines of the file must be 'raspberry', and the even lines 'pi'. So the f
     raspberry
     pi
 
-The file must be in this directory.
+The file must be in this directory, and called file.txt
 
 Once the file have been created correctly you will receive your clue to begin the 2nd part of the adventure...
 
