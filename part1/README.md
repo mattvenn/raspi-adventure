@@ -15,6 +15,20 @@ Once the file have been created correctly you will receive your clue to begin th
 
 # What you'll need to know...
 
+## Editing program files
+
+Use nano, an easy to use editor. Just type
+
+    nano
+
+on the command line to get started. Then control-X to exit. Nano will ask you if you want to save your file.
+
+## Running program files
+
+If you saved your program file as test.py, then you can run it like this
+
+    python test.py
+
 ## Opening a file to write
 
     file_handle = open('filename','w')
