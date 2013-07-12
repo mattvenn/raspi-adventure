@@ -17,9 +17,7 @@ Another way of doing a number of loops is using the range builtin:
     for var in range(10):
         print var
 
-This avoids having to initialise a variable and incrementing it manually. Try it in ipython. Read about how to start range() from 1 instead of 0 here:
-
-    http://docs.python.org/release/1.4/tut/node30.html
+This avoids having to initialise a variable and incrementing it manually. Try it in ipython. Read about how to start range() from 1 instead of 0 here: http://docs.python.org/release/1.4/tut/node30.html
 
 ## Converting from an int to a string
 
