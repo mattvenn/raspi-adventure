@@ -1,6 +1,6 @@
 # The Aim
 
-To pass this, the first stage of the adventure, you must write a python program that creates a file. The file must be 100 lines long.
+To pass this, the first stage of the adventure, you must write a python program that creates a file. This file must be 100 lines long, be in the directory given in your start message, and called file.txt
 
 The odd lines of the file must be 'raspberry', and the even lines 'pi'. So the first 4 lines of the file would look like this:
 
@@ -9,9 +9,8 @@ The odd lines of the file must be 'raspberry', and the even lines 'pi'. So the f
     raspberry
     pi
 
-The file must be in this directory, and called file.txt
 
-Once the file have been created correctly you will receive your clue to begin the 2nd part of the adventure...
+Once the file has been created correctly you will receive your clue to begin the 2nd part of the adventure...
 
 If you get stuck, remember that you'll easily be able to find examples of python programs on the internet!
 
@@ -51,8 +50,6 @@ You can repeat a loop using syntax like this:
     while var < 10:
         var += 1
         print var
-
-Try it in ipython.
 
 ## Closing files
 
