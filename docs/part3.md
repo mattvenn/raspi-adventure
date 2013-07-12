@@ -2,7 +2,7 @@
 
 Now we're moving onto images. You now need to create a PNG image, with 3 circles in it. The 3 circles must be red, green and blue.
 
-The image file must be in this directory, and must be called image.png
+The image file must be in the directory given in the message, and must be called image.png
 
 # What you'll need to know...
 

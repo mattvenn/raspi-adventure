@@ -2,7 +2,7 @@
 
 Now you must write a python program that creates 100 files. The files must be called 1, 2, 3, 4 ... all the way to 100.
 
-The files must be in this directory.
+The files must be in the directory given to you in the message.
 
 The first file must have 1 line in it, the 2nd file 2 lines, all the way up until the 100th file has 100 lines in it.
 
