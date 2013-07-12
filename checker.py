@@ -45,8 +45,8 @@ def init_next_stage(reg_data):
     url = 'https://github.com/mattvenn/raspi-adventure/blob/master/docs/part%d.md' % reg_data["stage"]
 
     if reg_data["stage"] == 1:
-        message = "Welcome, " + reg_data["name"] + ". Change to " + reg_data["cwd"] + " and go here " + url + " to get started"
-    elif reg_data["stage"] == 6:
+        message = "Welcome, %s. Change to %s and read %s to get started" % (reg_data["name"], reg_data["cwd"], url )
+    elif reg_data["stage"] == num_stages + 1:
         message = "Well done! You finished the game!"
     else:
         message = "Well done! Now change to %s and read %s for the next stage!" % ( reg_data["cwd"], url )
