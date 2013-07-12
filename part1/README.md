@@ -9,7 +9,7 @@ The odd lines of the file must be 'raspberry', and the even lines 'pi'. So the f
     raspberry
     pi
 
-The file must be in this directory.
+The file must be in this directory, and called file.txt
 
 Once the file have been created correctly you will receive your clue to begin the 2nd part of the adventure...
 
@@ -17,19 +17,19 @@ If you get stuck, remember that you'll easily be able to find examples of python
 
 # What you'll need to know...
 
-## Editing a python program
+## Editing program files
 
-You can use the nano editor to start editing myfile.py by typing
+Use nano, an easy to use editor. Just type
 
-    nano myfile.py
+    nano
 
-Then you can use the menu items at the bottom of the screen to save and exit. To exit you'd press the control key and the x key.
+on the command line to get started. Then control-X to exit. Nano will ask you if you want to save your file.
 
-## Running a python program
+## Running program files
 
-After you've created your program, you can run it like this (if you saved it as myfile.py):
+If you saved your program file as test.py, then you can run it like this
 
-    python myfile.py
+    python test.py
 
 ## Opening a file to write
 
