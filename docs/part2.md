@@ -4,9 +4,9 @@ Now you must write a python program that creates 100 files. The files must be ca
 
 The files must be in the directory given to you in the message.
 
-The first file must have 1 line in it, the 2nd file 2 lines, all the way up until the 100th file has 100 lines in it.
+The first file must have 1 line in it, the 2nd file 2 lines, all the way up until the 100th file has 100 lines in it. You can decide what is on each line.
 
-Once the files have been created you will receive your clue to begin the 2nd part of the adventure...
+Once the files have been created you will receive your clue to begin the 3rd part of the adventure...
 
 # What you'll need to know...
 
