@@ -39,15 +39,17 @@ def init_next_stage(reg_data):
     if reg_data["stage"] <= num_stages:
         logger.info( "creating new dir:" + reg_data["cwd"])
         output=check_output(["mkdir","-p",path + stage_path])
-        output=check_output(["cp",args.root_dir+stage_path+"/README.md",reg_data["cwd"]])
+#        output=check_output(["cp",args.root_dir+stage_path+"/README.md",reg_data["cwd"]])
 
     #send a message
+    url = 'https://github.com/mattvenn/raspi-adventure/blob/master/docs/part%d.md' % reg_data["stage"]
+
     if reg_data["stage"] == 1:
-        message = "Welcome, " + reg_data["name"] + ". Change to " + reg_data["cwd"] + " and read the README.md to get started"
+        message = "Welcome, " + reg_data["name"] + ". Change to " + reg_data["cwd"] + " and go here " + url + " to get started"
     elif reg_data["stage"] == 6:
         message = "Well done! You finished the game!"
     else:
-        message = "Well done! Now change to %s for the next stage!" % reg_data["cwd"]
+        message = "Well done! Now change to %s and read %s for the next stage!" % ( reg_data["cwd"], url )
 
     send_message(reg_data,message)
     logger.info("sent message")
