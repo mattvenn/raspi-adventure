@@ -13,7 +13,23 @@ The file must be in this directory.
 
 Once the file have been created correctly you will receive your clue to begin the 2nd part of the adventure...
 
+If you get stuck, remember that you'll easily be able to find examples of python programs on the internet!
+
 # What you'll need to know...
+
+## Editing a python program
+
+You can use the nano editor to start editing myfile.py by typing
+
+    nano myfile.py
+
+Then you can use the menu items at the bottom of the screen to save and exit. To exit you'd press the control key and the x key.
+
+## Running a python program
+
+After you've created your program, you can run it like this (if you saved it as myfile.py):
+
+    python myfile.py
 
 ## Opening a file to write
 
