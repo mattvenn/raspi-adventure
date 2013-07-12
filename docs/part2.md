@@ -25,7 +25,7 @@ This avoids having to initialise a variable and incrementing it manually. Try it
 
     str(10)
 
-Converts the integer 10 to a string '10'. In python we also have float() and int() for similar conversions.
+returns the string '10'. In python we also have float() and int() for similar conversions.
 
 # Further reading
 
